@@ -15,11 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 
 urlpatterns = [
+    # 默认访问
+    path('', include('article.urls', namespace='article')),
+    # admin访问
     path('admin/', admin.site.urls),
     # 新增代码，配置app的url
-    path('article/', include('article.urls', namespace='article')),
+    # path('article/', include('article.urls', namespace='article')),
     # 用户管理
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),
 ]

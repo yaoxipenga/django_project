@@ -22,5 +22,7 @@ urlpatterns = [
         name='article_safe_delete'
     ),
     # 更新文章
-    path('article-update/<int:id>/', views.article_update, name='article_update')
+    path('article-update/<int:id>/', views.article_update, name='article_update'),
+    # 设置默认访问页面跳转article_list
+    path('', views.article_list, name='article_list'),
 ]
