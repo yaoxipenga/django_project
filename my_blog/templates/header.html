@@ -9,7 +9,13 @@
         <li class="nav-item">
 
             <!-- 改写了这里的 href -->
-            <a class="nav-link" href="{% url 'article:article_list' %}">文章</a>
+            <a class="nav-link" href="{% url 'article:article_list' %}">查看文章</a>
+
+        </li>
+        <li class="nav-item">
+
+            <!-- 改写了这里的 href -->
+            <a class="nav-link" href="{% url 'article:article_create' %}">创建文章</a>
 
         </li>
          <!-- Django的 if 模板语句 -->
