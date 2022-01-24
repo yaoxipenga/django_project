@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from .form import UserLoginForm, UserRegisterForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+# 引入验证登录的装饰器
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -58,3 +61,19 @@ def user_register(request):
         return render(request, 'userprofile/register.html', context)
     else:
         return HttpResponse("请使用GET或POST请求数据")
+
+
+@login_required(login_url='/userprofile/login/')
+def user_delete(request, id):
+    if request.method == 'POST':
+        user = User.objects.get(id=id)
+        # 验证登录用户、待删除用户是否相同
+        if request.user == user:
+            # 退出登录，删除数据并返回博客列表
+            logout(request)
+            user.delete()
+            return redirect("article:article_list")
+        else:
+            return HttpResponse("sorry,您没有删除操作的权限。")
+    else:
+        return HttpResponse("仅接受post请求")
