@@ -16,24 +16,22 @@ from django.core.paginator import Paginator
 
 # 视图函数
 def article_list(request):
-    # return HttpResponse("Hello World!")
-    # 取出所有博客文章
-    # articles = ArticlePost.object.all()
-    # articles = ArticlePost.objects.all()
-    article_list = ArticlePost.objects.all()
-    # 每页显示一篇文章
-    paginator = Paginator(article_list, 6)
-    # 获取 url 中的页码
+    # 根据GET请求中查询条件
+    # 返回不同排序的对象数组
+    if request.GET.get('order') == 'total_views':
+        article_list = ArticlePost.objects.all().order_by('-total_views')
+        order = 'total_views'
+    else:
+        article_list = ArticlePost.objects.all()
+        order = 'normal'
+
+    paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
-    # 将导航对象相应的页码内容返回给 articles
     articles = paginator.get_page(page)
 
-    context = {'articles': articles}
-    return render(request, 'article/list.html', context)
+    # 修改此行
+    context = {'articles': articles, 'order': order}
 
-    # 需要传递给模板（templates) 的对象
-    context = {'articles': articles}
-    # render 函数：载入模板，并返回context对象
     return render(request, 'article/list.html', context)
 
 
