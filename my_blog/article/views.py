@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 # 引入Q对象
 from django.db.models import Q
-
+from comment.models import Comment
 
 # 视图函数
 def article_list(request):
@@ -53,6 +53,8 @@ def article_list(request):
 
 def article_detail(request, id):
     article = ArticlePost.objects.get(id=id)
+    # 取出文章评论
+    comments = Comment.objects.filter(article=id)
 
     # 浏览量 +1
     article.total_views += 1
@@ -77,7 +79,7 @@ def article_detail(request, id):
     )
     article.body = md.convert(article.body)
 
-    context = {'article': article, 'toc': md.toc }
+    context = {'article': article, 'toc': md.toc, 'comments': comments }
     return render(request, 'article/detail.html', context)
 
 
