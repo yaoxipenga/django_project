@@ -11,13 +11,13 @@
 {% block content %}
 
 <!-- 文章详情 -->
-<div class="container">
+<div class="container" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <!-- 将原有内容嵌套进新的div中 -->
         <div class="col-9">
         <!-- 标题及作者 -->
-        <h1 class="mt-4 mb-4">{{ article.title }}</h1>
-        <div class="alert alert-success">作者：{{ article.author }}
+           <h1 class="mt-4 mb-4">{{ article.title }}</h1>
+           <div class="alert alert-success">作者：{{ article.author }}
             {% if user == article.author %}
         · <a href="#" onclick="confirm_safe_delete()">删除文章</a>
             · <a href="{% url "article:article_update" article.id %}">编辑文章</a>
@@ -35,7 +35,15 @@
         <div>
                 浏览：{{ article.total_views }}
         </div>
-
+        </div>
+        <!-- 新增的目录 -->
+        <div class="col-3 mt-4">
+            <h4><strong>目录</strong></h4>
+            <hr>
+            <div>
+                {{ toc|safe }}
+            </div>
+         </div>
         <!-- 文章正文 -->
         <div class="col-12">
             <p>{{ article.body|safe }}</p>
@@ -53,7 +61,7 @@
                 <div class="form-group">
                     <label for="body">
                         <strong>
-                            我也要发言：
+                            留言：
                         </strong>
                     </label>
                     <textarea
@@ -61,25 +69,24 @@
                         class="form-control"
                         id="body"
                         name="body"
-                        rows="2"></textarea>
+                        rows="1"></textarea>
                 </div>
                 <!-- 提交按钮 -->
-                <button type="submit" class="btn btn-primary ">发送</button>
+                <div style="text-align: center"><button type="submit" class="btn btn-primary" >发送</button></div>
             </form>
         </div>
         <br>
     {% else %}
         <br>
-        <h5 class="row justify-content-center">
-            请<a href="{% url 'userprofile:login' %}">登录</a>后回复
-        </h5>
+        <h6 class="row justify-content-center" >
+            请<a href="{% url 'userprofile:login' %}">登录</a>后评论
+        </h6>
         <br>
     {% endif %}
 
 
 
-    <!-- 显示评论 -->
-    <h4>共有{{ comments.count }}条评论</h4>
+
     <div>
         {% for comment in comments %}
             <hr>
@@ -89,24 +96,16 @@
                 </strong> 于
                 <span style="color: green">
                     {{ comment.created|date:"Y-m-d H:i:s" }}
-                </span> 时说：
+                </span> 时评论：
             </p>
-            <pre style="font-family: inherit; font-size: 1em;">
-{{ comment.body }}</pre>
+            <pre style="font-family: inherit; font-size: 1em;">{{ comment.body }}</pre>
         {% endfor %}
     </div>
-</div>
-        <!-- 新增的目录 -->
-        <div class="col-3 mt-4">
-            <h4><strong>目录</strong></h4>
-            <hr>
-            <div>
-                {{ toc|safe }}
-            </div>
-        </div>
+
 
     </div>
 </div>
+
 <script>
   function confirm_safe_delete() {
     layer.open({
