@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 # timezone用于处理时间相关事物
 from django.utils import timezone
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 class ArticleColumn(models.Model):
@@ -34,6 +35,8 @@ class ArticlePost(models.Model):
     # 浏览量字段
     total_views = models.PositiveIntegerField(default=0)
     column = models.ForeignKey(ArticleColumn, null=True, blank=True, on_delete=models.CASCADE, related_name='article')
+    # 文章标签
+    tags = TaggableManager(blank=True)
 
     # 内部类 class Meta 用于给model定义元数据
     class Meta:
