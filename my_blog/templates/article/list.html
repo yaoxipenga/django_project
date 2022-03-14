@@ -81,6 +81,15 @@
     {% for article in articles %}
         <!-- 文章内容 -->
         <div class="col-12">
+             <!-- 标题图 -->
+        {% if article.avatar %}
+            <div class="col-3" style="float: left">
+                <img src="{{ article.avatar.url }}"
+                     alt="avatar"
+                     style="max-width:60%; border-radius: 20px"
+                >
+            </div>
+        {% endif %}
             <!-- 栏目 -->
             {% if article.column %}
                 <button type="button"

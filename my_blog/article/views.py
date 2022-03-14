@@ -133,7 +133,8 @@ def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
         # 将提交的数据赋值到表单实例中
-        article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(request.POST, request.FILES)
+        # article_post_form = ArticlePostForm(data=request.POST)
         # 判断提交的数据是否满足模型的要求
         if article_post_form.is_valid():
             # 保存数据，但暂时不提交到数据库中
@@ -198,6 +199,10 @@ def article_update(request, id):
             # 保存新写入的 title、body 数据并保存
             article.title = request.POST['title']
             article.body = request.POST['body']
+            if request.FILES.get('avatar'):
+                article.avatar = request.FILES.get('avatar')
+                article.tags.set(*request.POST.get('tags').split(','), clear=True)
+                article.save()
             if request.POST['column'] != 'none':
                 article.column = ArticleColumn.objects.get(id=request.POST['column'])
             else:
@@ -215,6 +220,6 @@ def article_update(request, id):
         article_post_form = ArticlePostForm()
         columns = ArticleColumn.objects.all()
         # 赋值上下文，将 article 文章对象也传递进去，以便提取旧的内容
-        context = {'article': article, 'article_post_form': article_post_form, 'columns': columns}
+        context = {'article': article, 'article_post_form': article_post_form, 'columns': columns, 'tags': ','.join([x for x in article.tags.names()])}
         # 将响应返回到模板中
         return render(request, 'article/update.html', context)
