@@ -37,15 +37,18 @@
         </div>
         </div>
         <!-- 新增的目录 -->
-        <div class="col-3 mt-4">
+        <div class="col-3 mt-4" id="sidebar" class="sidebar">
+             <div class="sidebar__inner">
             <h4><strong>目录</strong></h4>
             <hr>
             <div>
                 {{ toc|safe }}
             </div>
          </div>
+        </div>
+
         <!-- 文章正文 -->
-        <div class="col-12">
+        <div class="col-9">
             <p>{{ article.body|safe }}</p>
         </div>
         </div>
@@ -107,11 +110,34 @@
     </div>
     </div>
 </div>
+
+ <!-- 粘性侧边栏样式 -->
+        <style>
+           .sidebar{
+           will-change: min-height;
+        }
+
+            .sidebar__inner{
+             transform: translate(0, 0);
+             transform: translate3d(0, 0, 0);
+             will-change: position, transform;
+        }
+       </style>
+
+
 {% block script %}
+<script src="{% static 'sticky_sidebar/jquery.sticky-sidebar.min.js' %}"></script>
+<script type="text/javascript">
+    $('#sidebar').stickySidebar({
+        topSpacing: 20,
+        bottomSpacing: 20,
+    });
+</script>
 <script>
     $(".django-ckeditor-widget").removeAttr('style');
 </script>
 {% endblock script %}
+
 <script>
   function confirm_safe_delete() {
     layer.open({
