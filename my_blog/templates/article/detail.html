@@ -64,12 +64,16 @@
                             留言：
                         </strong>
                     </label>
-                    <textarea
-                        type="text"
-                        class="form-control"
-                        id="body"
-                        name="body"
-                        rows="1"></textarea>
+                    <div>
+                        {{ comment_form.media }}
+                        {{ comment_form.body }}
+                    </div>
+<!--                    <textarea-->
+<!--                        type="text"-->
+<!--                        class="form-control"-->
+<!--                        id="body"-->
+<!--                        name="body"-->
+<!--                        rows="1"></textarea>-->
                 </div>
                 <!-- 提交按钮 -->
                 <div style="text-align: center"><button type="submit" class="btn btn-primary" >发送</button></div>
@@ -79,7 +83,7 @@
     {% else %}
         <br>
         <h6 class="row justify-content-center" >
-            请<a href="{% url 'userprofile:login' %}">登录</a>后评论
+            请<a href="{% url 'userprofile:login' %}">登录</a>后操作
         </h6>
         <br>
     {% endif %}
@@ -98,14 +102,16 @@
                     {{ comment.created|date:"Y-m-d H:i:s" }}
                 </span> 时评论：
             </p>
-            <pre style="font-family: inherit; font-size: 1em;">{{ comment.body }}</pre>
+        <div>{{ comment.body|safe }}</div>
         {% endfor %}
     </div>
-
-
     </div>
 </div>
-
+{% block script %}
+<script>
+    $(".django-ckeditor-widget").removeAttr('style');
+</script>
+{% endblock script %}
 <script>
   function confirm_safe_delete() {
     layer.open({
@@ -119,4 +125,6 @@
     })
 }
 </script>
+<script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.css' %}">
 {% endblock content %}

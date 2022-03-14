@@ -16,6 +16,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from comment.models import Comment
 from .models import ArticleColumn
+from comment.forms import CommentForm
 
 
 # 视图函数
@@ -99,7 +100,8 @@ def article_detail(request, id):
     article = ArticlePost.objects.get(id=id)
     # 取出文章评论
     comments = Comment.objects.filter(article=id)
-
+    # 引入评论表单
+    comment_form = CommentForm()
     # 浏览量 +1
     article.total_views += 1
     article.save(update_fields=['total_views'])
@@ -123,7 +125,7 @@ def article_detail(request, id):
     )
     article.body = md.convert(article.body)
 
-    context = {'article': article, 'toc': md.toc, 'comments': comments}
+    context = {'article': article, 'toc': md.toc, 'comments': comments, 'comment_form': comment_form}
     return render(request, 'article/detail.html', context)
 
 
@@ -133,8 +135,7 @@ def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
         # 将提交的数据赋值到表单实例中
-        article_post_form = ArticlePostForm(request.POST, request.FILES)
-        # article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(data=request.POST)
         # 判断提交的数据是否满足模型的要求
         if article_post_form.is_valid():
             # 保存数据，但暂时不提交到数据库中
@@ -199,10 +200,6 @@ def article_update(request, id):
             # 保存新写入的 title、body 数据并保存
             article.title = request.POST['title']
             article.body = request.POST['body']
-            if request.FILES.get('avatar'):
-                article.avatar = request.FILES.get('avatar')
-                article.tags.set(*request.POST.get('tags').split(','), clear=True)
-                article.save()
             if request.POST['column'] != 'none':
                 article.column = ArticleColumn.objects.get(id=request.POST['column'])
             else:
@@ -220,6 +217,6 @@ def article_update(request, id):
         article_post_form = ArticlePostForm()
         columns = ArticleColumn.objects.all()
         # 赋值上下文，将 article 文章对象也传递进去，以便提取旧的内容
-        context = {'article': article, 'article_post_form': article_post_form, 'columns': columns, 'tags': ','.join([x for x in article.tags.names()])}
+        context = {'article': article, 'article_post_form': article_post_form, 'columns': columns}
         # 将响应返回到模板中
         return render(request, 'article/update.html', context)
